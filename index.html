@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- Palette: Jobssy Branding (Gold #CFA761, Slate #2A3B45, Teal #5E8D8A, Parchment #F5EFDF, Charcoal #38312B) -->
+<!-- Confirmation: NEITHER Mermaid JS NOR SVG were used anywhere in the output. -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jobssy: Strategic Proposal Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F5EFDF; /* Soft Parchment */
+            color: #2A3B45; /* Deep Slate */
+            scroll-behavior: smooth;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 420px;
+            max-height: 480px;
+        }
+
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 460px;
+                max-height: 500px;
+            }
+        }
+
+        .logo-glow {
+            filter: drop-shadow(0 0 15px rgba(207, 167, 97, 0.4));
+            will-change: transform;
+            transition: transform 0.1s ease-out;
+        }
+
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card-hover:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 40px -10px rgba(42, 59, 69, 0.15);
+        }
+
+        /* Hero Animation & Parallax Styles */
+        .hero-bg-layer {
+            position: absolute;
+            pointer-events: none;
+            will-change: transform;
+        }
+
+        .floating-blob {
+            border-radius: 50%;
+            filter: blur(80px);
+            animation: float-slow 20s infinite alternate ease-in-out;
+            opacity: 0.15;
+        }
+
+        @keyframes float-slow {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(40px, -60px) scale(1.1); }
+        }
+
+        .parallax-target {
+            transition: transform 0.2s cubic-bezier(0.1, 0, 0.2, 1);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F5EFDF;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #CFA761;
+            border-radius: 10px;
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            gold: '#CFA761',
+                            slate: '#2A3B45',
+                            teal: '#5E8D8A',
+                            parchment: '#F5EFDF',
+                            charcoal: '#38312B'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="antialiased pb-0">
+
+    <!-- Navigation -->
+    <nav class="bg-brand-slate text-white sticky top-0 z-50 backdrop-blur-md shadow-lg border-b border-brand-gold/20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <div class="flex items-center gap-4">
+                    <img src="https://f000.backblazeb2.com/file/jpgshared/nZCGZK0j" alt="Jobssy Logo" class="h-10 w-auto" />
+                </div>
+                <div class="hidden lg:block">
+                    <div class="flex items-baseline space-x-8">
+                        <a href="#model" class="nav-link text-brand-parchment/80 hover:text-brand-gold text-xs font-black tracking-widest uppercase transition-all">Business Model</a>
+                        <a href="#equity" class="nav-link text-brand-parchment/80 hover:text-brand-gold text-xs font-black tracking-widest uppercase transition-all">Partnership</a>
+                        <a href="#financials" class="nav-link text-brand-parchment/80 hover:text-brand-gold text-xs font-black tracking-widest uppercase transition-all">Capital</a>
+                        <a href="#timeline" class="nav-link bg-brand-gold text-brand-slate px-6 py-2 rounded-lg text-xs font-black shadow-lg hover:brightness-110 transition-all uppercase tracking-tighter">Strategic Plan</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header with Parallax & Animation -->
+    <header id="heroSection" class="bg-brand-slate text-brand-parchment py-32 px-6 border-b-[10px] border-brand-gold relative overflow-hidden">
+        <div class="hero-bg-layer floating-blob bg-brand-teal w-[600px] h-[600px] -top-20 -right-20" data-parallax-factor="0.02"></div>
+        <div class="hero-bg-layer floating-blob bg-brand-gold w-[500px] h-[500px] -bottom-20 -left-20" style="animation-delay: -5s;" data-parallax-factor="0.03"></div>
+        <div class="hero-bg-layer floating-blob bg-brand-teal w-[300px] h-[300px] top-1/2 left-1/3 opacity-5" style="animation-duration: 15s;" data-parallax-factor="0.05"></div>
+
+        <div class="max-w-4xl mx-auto text-center relative z-10">
+            <div class="mb-14 parallax-target" id="heroLogo">
+                <img src="https://f000.backblazeb2.com/file/jpgshared/nZCGZK0j" alt="Jobssy" class="h-28 md:h-32 w-auto mx-auto logo-glow">
+            </div>
+            
+            <h1 class="text-5xl md:text-8xl font-black mb-8 tracking-tighter leading-none uppercase parallax-target" id="heroTitle">
+                Charting the <br> <span class="text-brand-gold">Gig Economy</span>
+            </h1>
+            <p class="text-xl md:text-2xl font-light text-brand-parchment/70 mb-12 max-w-2xl mx-auto leading-relaxed parallax-target" id="heroSubtitle">
+                A high-trust marketplace built on transparency, bridging regional demand with professional supply.
+            </p>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 space-y-40">
+
+        <!-- Business Model Section -->
+        <section id="model" class="scroll-mt-32">
+            <div class="mb-16 max-w-3xl">
+                <h2 class="text-5xl font-black text-brand-slate mb-6 tracking-tighter uppercase">Fee Architecture</h2>
+                <p class="text-brand-slate/60 text-xl font-medium">
+                    The platform's sustainability is rooted in a clear 20/80 commission logic, designed to foster seeker loyalty while powering ecosystem innovation.
+                </p>
+            </div>
+            
+            <div class="bg-white p-10 md:p-16 rounded-[3rem] shadow-xl border border-brand-slate/5 grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+                <div class="order-2 lg:order-1">
+                    <div class="bg-brand-parchment p-10 rounded-[2rem] border border-brand-gold/20 shadow-inner">
+                        <h4 class="font-black text-brand-teal mb-8 text-xs uppercase tracking-[0.3em] flex items-center gap-3">
+                            <span class="w-3 h-3 bg-brand-gold rounded-full"></span>
+                            Scenario Analysis
+                        </h4>
+                        <div class="space-y-6">
+                            <div class="flex justify-between items-center border-b border-brand-slate/10 pb-4">
+                                <span class="text-brand-slate/60 font-bold uppercase text-sm tracking-tighter">Gross Service Value</span>
+                                <span class="font-black text-2xl text-brand-slate">40.00 AED</span>
+                            </div>
+                            <div class="flex justify-between items-center border-b border-brand-slate/10 pb-4">
+                                <span class="text-brand-gold font-black uppercase text-sm tracking-tighter">Jobssy Fee (20%)</span>
+                                <span class="font-black text-2xl text-brand-gold">8.00 AED</span>
+                            </div>
+                            <div class="flex justify-between items-center pt-2">
+                                <span class="text-brand-teal font-black text-sm uppercase tracking-widest">Net Seeker Payout</span>
+                                <span class="font-black text-3xl text-brand-teal tracking-tighter">32.00 AED</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="order-1 lg:order-2 flex flex-col items-center">
+                    <div class="chart-container">
+                        <canvas id="businessModelChart"></canvas>
+                    </div>
+                    <p class="text-[10px] font-black text-brand-slate/30 mt-8 text-center uppercase tracking-[0.4em]">Revenue Composition</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Equity Section -->
+        <section id="equity" class="scroll-mt-32">
+            <div class="mb-16 max-w-3xl">
+                <h2 class="text-5xl font-black text-brand-slate mb-6 tracking-tighter uppercase">Stakeholder Equity</h2>
+                <p class="text-brand-slate/60 text-xl font-medium leading-relaxed">
+                    Aligning ownership with contribution to ensure visionary leadership, technical precision, and strategic market access.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+                <div class="lg:col-span-7 bg-white p-12 rounded-[3rem] shadow-xl border border-brand-slate/5">
+                     <div class="chart-container">
+                        <canvas id="equityChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="lg:col-span-5 flex flex-col justify-center space-y-6">
+                    <div class="bg-brand-slate text-brand-parchment p-8 rounded-3xl shadow-xl border-l-[10px] border-brand-gold card-hover">
+                        <div class="flex justify-between items-start mb-4">
+                            <h4 class="font-black text-2xl tracking-tighter uppercase">Butti Al Ali</h4>
+                            <span class="bg-brand-gold text-brand-slate text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest">60%</span>
+                        </div>
+                        <p class="text-xs text-brand-parchment/60 font-medium leading-relaxed">Strategic lead for regional operations and Egyptian market compliance.</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-3xl shadow-lg border-l-[10px] border-brand-teal card-hover">
+                        <div class="flex justify-between items-start mb-4">
+                            <h4 class="font-black text-2xl tracking-tighter uppercase text-brand-slate">Saheel Ahmed</h4>
+                            <span class="bg-brand-teal text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest">25%</span>
+                        </div>
+                        <p class="text-xs text-brand-slate/50 font-medium leading-relaxed">Technology lead driving the AI stack and full-platform architecture.</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-3xl shadow-lg border-l-[10px] border-brand-gold/30 card-hover">
+                        <div class="flex justify-between items-start mb-4">
+                            <h4 class="font-black text-2xl tracking-tighter uppercase text-brand-slate">Ali Ismail</h4>
+                            <span class="bg-brand-slate/10 text-brand-slate text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest">15%</span>
+                        </div>
+                        <p class="text-xs text-brand-slate/50 font-medium leading-relaxed">Strategic facilitator bridging the gap between networking and execution.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Financials Section -->
+        <section id="financials" class="scroll-mt-32">
+            <div class="bg-brand-slate rounded-[4rem] p-12 md:p-24 shadow-2xl text-brand-parchment relative overflow-hidden">
+                <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(207,167,97,0.08),_transparent)]"></div>
+                
+                <div class="text-center max-w-3xl mx-auto mb-20 relative z-10">
+                    <h2 class="text-5xl font-black mb-8 tracking-tighter uppercase">Fiscal Acceleration</h2>
+                    <p class="text-brand-parchment/40 text-xl font-medium">Investment milestones including cloud workspace and SMTP integration.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center relative z-10">
+                    <div class="bg-white/5 p-10 rounded-[3rem] border border-white/10 backdrop-blur-xl">
+                        <div class="chart-container">
+                            <canvas id="financialChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 gap-12">
+                        <div class="space-y-6">
+                            <h3 class="text-xl font-black text-brand-teal uppercase tracking-[0.3em] mb-4">Operational Budget (AED)</h3>
+                            <div class="space-y-4">
+                                <div class="flex justify-between text-lg"><span class="text-brand-parchment/30 font-bold uppercase text-xs tracking-widest">Google Workspace</span><span class="font-black tracking-tighter">40 - 80</span></div>
+                                <div class="flex justify-between text-lg"><span class="text-brand-parchment/30 font-bold uppercase text-xs tracking-widest">SMTP / Email API</span><span class="font-black tracking-tighter">60 - 120</span></div>
+                                <div class="flex justify-between text-lg"><span class="text-brand-parchment/30 font-bold uppercase text-xs tracking-widest">Hosting & AI Stack</span><span class="font-black tracking-tighter">735</span></div>
+                                <div class="flex justify-between items-center pt-4 border-t border-white/10">
+                                    <span class="text-brand-gold font-black text-sm uppercase tracking-widest">Monthly Estimated Ops</span>
+                                    <span class="font-black text-4xl text-brand-gold tracking-tighter italic">6,435</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Timeline -->
+        <section id="timeline" class="scroll-mt-32 pb-24">
+            <div class="mb-20 text-center max-w-3xl mx-auto">
+                <h2 class="text-5xl font-black text-brand-slate mb-6 tracking-tighter uppercase">Growth Roadmap</h2>
+                <p class="text-brand-slate/60 text-xl font-medium">Concept to market-ready ecosystem in eight weeks.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                <div class="bg-white p-12 rounded-[3rem] shadow-xl border-t-[10px] border-brand-teal card-hover relative overflow-hidden">
+                    <div class="absolute -right-6 -bottom-6 text-[12rem] font-black text-brand-teal/5 select-none leading-none">1</div>
+                    <h3 class="text-3xl font-black text-brand-slate mb-2 uppercase tracking-tighter">Foundation</h3>
+                    <p class="text-brand-teal font-black text-[10px] uppercase tracking-[0.5em] mb-12">MVP Development Cycle</p>
+                    
+                    <div class="space-y-10 relative z-10">
+                        <div class="flex gap-6">
+                            <div class="w-12 h-12 bg-brand-teal text-white rounded-xl flex items-center justify-center font-black text-sm shrink-0 shadow-lg shadow-brand-teal/30">M1</div>
+                            <div>
+                                <h4 class="font-black text-lg text-brand-slate uppercase tracking-tight">Core Logic Build</h4>
+                                <p class="text-brand-slate/40 mt-1 text-sm leading-relaxed">Defining smart contracts, user flows, and backend architecture.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-6">
+                            <div class="w-12 h-12 bg-brand-teal/10 text-brand-teal rounded-xl flex items-center justify-center font-black text-sm shrink-0 border-2 border-brand-teal">M2</div>
+                            <div>
+                                <h4 class="font-black text-lg text-brand-slate uppercase tracking-tight">PWA Deployment</h4>
+                                <p class="text-brand-slate/40 mt-1 text-sm leading-relaxed">Soft launch with escrow security and web-mobile access.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-12 rounded-[3rem] shadow-xl border-t-[10px] border-brand-gold card-hover relative overflow-hidden">
+                    <div class="absolute -right-6 -bottom-6 text-[12rem] font-black text-brand-gold/5 select-none leading-none">2</div>
+                    <h3 class="text-3xl font-black text-brand-slate mb-2 uppercase tracking-tighter text-brand-gold">Expansion</h3>
+                    <p class="text-brand-gold font-black text-[10px] uppercase tracking-[0.5em] mb-12">Scale & Dominance</p>
+                    
+                    <div class="space-y-10 relative z-10">
+                        <div class="flex gap-6">
+                            <div class="w-12 h-12 bg-brand-gold/10 text-brand-gold rounded-xl flex items-center justify-center text-xl shrink-0 border-2 border-brand-gold">📱</div>
+                            <div>
+                                <h4 class="font-black text-lg text-brand-slate uppercase tracking-tight">App Ecosystem</h4>
+                                <p class="text-brand-slate/40 mt-1 text-sm leading-relaxed">Releasing dedicated iOS and Android native platforms.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-6">
+                            <div class="w-12 h-12 bg-brand-gold/10 text-brand-gold rounded-xl flex items-center justify-center text-xl shrink-0 border-2 border-brand-gold">🌏</div>
+                            <div>
+                                <h4 class="font-black text-lg text-brand-slate uppercase tracking-tight">Regional Scale</h4>
+                                <p class="text-brand-slate/40 mt-1 text-sm leading-relaxed">Aggressive marketing campaigns across key regional hubs.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-brand-slate text-brand-parchment/30 py-24 px-6 text-center border-t border-brand-gold/10">
+        <div class="max-w-4xl mx-auto">
+            <img src="https://f000.backblazeb2.com/file/jpgshared/nZCGZK0j" alt="Jobssy" class="h-16 w-auto mx-auto mb-10 logo-glow" style="filter: grayscale(1) brightness(2);">
+            <p class="text-[10px] uppercase tracking-[0.8em] font-black mb-8 opacity-40">Strategic Project Ecosystem</p>
+            <p class="text-xs font-medium max-w-lg mx-auto leading-relaxed">
+                Proprietary intelligence brief for Butti Al Ali, Saheel Ahmed, and Ali Ismail. <br> &copy; 2026 Jobssy Platform.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth Scrolling for Navigation
+        document.querySelectorAll('a.nav-link').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const href = this.getAttribute('href');
+                if (href.startsWith('#')) {
+                    e.preventDefault();
+                    const target = document.querySelector(href);
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                        // Update URL hash without jumping
+                        history.pushState(null, null, href);
+                    }
+                }
+            });
+        });
+
+        // Parallax Effect Implementation
+        const hero = document.getElementById('heroSection');
+        const layers = document.querySelectorAll('.hero-bg-layer');
+        const logo = document.getElementById('heroLogo');
+        const title = document.getElementById('heroTitle');
+        const subtitle = document.getElementById('heroSubtitle');
+
+        hero.addEventListener('mousemove', (e) => {
+            const centerX = hero.offsetWidth / 2;
+            const centerY = hero.offsetHeight / 2;
+            const moveX = (e.clientX - centerX) / centerX;
+            const moveY = (e.clientY - centerY) / centerY;
+
+            layers.forEach(layer => {
+                const factor = layer.getAttribute('data-parallax-factor');
+                layer.style.transform = `translate(${moveX * factor * 500}px, ${moveY * factor * 500}px)`;
+            });
+
+            logo.style.transform = `translate(${moveX * -20}px, ${moveY * -20}px)`;
+            title.style.transform = `translate(${moveX * -10}px, ${moveY * -10}px)`;
+            subtitle.style.transform = `translate(${moveX * -5}px, ${moveY * -5}px)`;
+        });
+
+        hero.addEventListener('mouseleave', () => {
+            layers.forEach(layer => {
+                layer.style.transform = `translate(0, 0)`;
+            });
+            logo.style.transform = `translate(0, 0)`;
+            title.style.transform = `translate(0, 0)`;
+            subtitle.style.transform = `translate(0, 0)`;
+        });
+
+        const globalTooltipConfig = {
+            callbacks: {
+                title: function(tooltipItems) {
+                    const item = tooltipItems[0];
+                    let label = item.chart.data.labels[item.dataIndex];
+                    if (Array.isArray(label)) {
+                        return label.join(' ');
+                    } else {
+                        return label;
+                    }
+                }
+            }
+        };
+
+        const initBusinessModelChart = () => {
+            const ctx = document.getElementById('businessModelChart').getContext('2d');
+            const wrappedLabels = [
+                ['Platform', 'Commission', '(20%) - 8 AED'],
+                ['Job Seeker', 'Payout (80%)', '- 32 AED']
+            ];
+            
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: wrappedLabels,
+                    datasets: [{
+                        data: [20, 80],
+                        backgroundColor: ['#CFA761', '#5E8D8A'],
+                        borderWidth: 10,
+                        borderColor: '#ffffff',
+                        hoverOffset: 15
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    responsive: true,
+                    layout: { padding: 40 },
+                    plugins: {
+                        legend: { 
+                            position: 'bottom',
+                            labels: {
+                                padding: 40,
+                                usePointStyle: true,
+                                boxWidth: 10,
+                                font: { size: 11, weight: '800', family: "'Inter', sans-serif" },
+                                color: '#2A3B45'
+                            }
+                        },
+                        tooltip: globalTooltipConfig
+                    },
+                    cutout: '75%'
+                }
+            });
+        };
+
+        const initEquityChart = () => {
+            const ctx = document.getElementById('equityChart').getContext('2d');
+            const wrappedLabels = [
+                ['Butti Al Ali', '(Lead) - 60%'],
+                ['Saheel Ahmed', '(CTO) - 25%'],
+                ['Ali Ismail', '(Network) - 15%']
+            ];
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: wrappedLabels,
+                    datasets: [{
+                        data: [60, 25, 15],
+                        backgroundColor: ['#2A3B45', '#5E8D8A', '#CFA761'],
+                        borderRadius: 15,
+                        barThickness: 45
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    maintainAspectRatio: false,
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                title: globalTooltipConfig.callbacks.title,
+                                label: function(context) {
+                                    return ' ' + context.raw + '% Total Equity';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            max: 100,
+                            grid: { display: false },
+                            ticks: { color: '#2A3B45', font: { family: "'Inter', sans-serif", weight: '800', size: 10 } }
+                        },
+                        y: {
+                            grid: { display: false },
+                            ticks: { 
+                                font: { family: "'Inter', sans-serif", weight: '900', size: 13 },
+                                padding: 15,
+                                color: '#2A3B45'
+                            }
+                        }
+                    }
+                }
+            });
+        };
+
+        const initFinancialChart = () => {
+            const ctx = document.getElementById('financialChart').getContext('2d');
+            const wrappedLabels = [
+                ['One-Time', 'Setup'],
+                ['Monthly', 'Comm. Stk.'],
+                ['Monthly', 'Hosting+AI'],
+                ['Monthly', 'Team Ops']
+            ];
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: wrappedLabels,
+                    datasets: [
+                        {
+                            label: 'Base (AED)',
+                            data: [1470, 100, 920, 1850],
+                            backgroundColor: '#CFA761',
+                            borderRadius: 6
+                        },
+                        {
+                            label: 'Upper (AED)',
+                            data: [1850, 200, 1100, 5500],
+                            backgroundColor: '#5E8D8A',
+                            borderRadius: 6
+                        }
+                    ]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    responsive: true,
+                    layout: { padding: { top: 20 } },
+                    plugins: {
+                        legend: { 
+                            position: 'top', 
+                            labels: { 
+                                color: '#ffffff',
+                                font: { size: 11, weight: '800', family: "'Inter', sans-serif" },
+                                padding: 25
+                            } 
+                        },
+                        tooltip: globalTooltipConfig
+                    },
+                    scales: {
+                        x: {
+                            grid: { display: false },
+                            ticks: { color: 'rgba(255,255,255,0.4)', font: { weight: '800', family: "'Inter', sans-serif", size: 10 } }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(255,255,255,0.05)' },
+                            ticks: { color: 'rgba(255,255,255,0.2)', font: { weight: '600', size: 10 } }
+                        }
+                    }
+                }
+            });
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initBusinessModelChart();
+            initEquityChart();
+            initFinancialChart();
+        });
+    </script>
+</body>
+</html>
