@@ -669,8 +669,8 @@
         const initBusinessModelChart = () => {
             const ctx = document.getElementById('businessModelChart').getContext('2d');
             const wrappedLabels = [
-                ['Platform', 'Commission', '(20%) - 8 د.إ'],
-                ['Job Seeker', 'Payout (80%)', '- 32 د.إ']
+                ['Platform Fee', '(20%)'],
+                ['Seeker Payout', '(80%)']
             ];
             
             new Chart(ctx, {
@@ -692,12 +692,14 @@
                     plugins: {
                         legend: { 
                             position: 'bottom',
+                            align: isMobile ? 'start' : 'center',
                             fullSize: true,
                             labels: {
-                                padding: isMobile ? 14 : 40,
+                                padding: isMobile ? 10 : 24,
                                 usePointStyle: true,
-                                boxWidth: 10,
-                                font: { size: isMobile ? 10 : 11, weight: '800', family: "'Inter', sans-serif" },
+                                boxWidth: isMobile ? 8 : 10,
+                                boxHeight: isMobile ? 8 : 10,
+                                font: { size: isMobile ? 9 : 11, weight: '800', family: "'Inter', sans-serif" },
                                 color: '#2A3B45'
                             }
                         },
@@ -747,13 +749,18 @@
                             beginAtZero: true,
                             max: 100,
                             grid: { display: false },
-                            ticks: { color: '#2A3B45', font: { family: "'Inter', sans-serif", weight: '800', size: isMobile ? 9 : 10 } }
+                            ticks: {
+                                color: '#2A3B45',
+                                maxRotation: 0,
+                                minRotation: 0,
+                                font: { family: "'Inter', sans-serif", weight: '800', size: isMobile ? 8 : 10 }
+                            }
                         },
                         y: {
                             grid: { display: false },
                             ticks: { 
-                                font: { family: "'Inter', sans-serif", weight: '900', size: isMobile ? 11 : 13 },
-                                padding: isMobile ? 8 : 15,
+                                font: { family: "'Inter', sans-serif", weight: '900', size: isMobile ? 10 : 13 },
+                                padding: isMobile ? 6 : 15,
                                 color: '#2A3B45'
                             }
                         }
@@ -796,12 +803,14 @@
                     layout: { padding: { top: isMobile ? 34 : 20 } },
                     plugins: {
                         legend: { 
-                            position: 'top', 
+                            position: isMobile ? 'bottom' : 'top', 
                             fullSize: true,
                             labels: { 
                                 color: '#ffffff',
-                                font: { size: isMobile ? 10 : 11, weight: '800', family: "'Inter', sans-serif" },
-                                padding: isMobile ? 12 : 25
+                                font: { size: isMobile ? 9 : 11, weight: '800', family: "'Inter', sans-serif" },
+                                padding: isMobile ? 10 : 25,
+                                boxWidth: isMobile ? 10 : 18,
+                                boxHeight: isMobile ? 10 : 12
                             } 
                         },
                         tooltip: globalTooltipConfig
@@ -809,7 +818,13 @@
                     scales: {
                         x: {
                             grid: { display: false },
-                            ticks: { color: 'rgba(255,255,255,0.4)', font: { weight: '800', family: "'Inter', sans-serif", size: isMobile ? 9 : 10 } }
+                            ticks: {
+                                color: 'rgba(255,255,255,0.4)',
+                                maxRotation: 0,
+                                minRotation: 0,
+                                autoSkip: false,
+                                font: { weight: '800', family: "'Inter', sans-serif", size: isMobile ? 8 : 10 }
+                            }
                         },
                         y: {
                             beginAtZero: true,
